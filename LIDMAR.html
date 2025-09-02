@@ -1,0 +1,1508 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="theme-color" content="#2563eb">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>LÍDER MARKET - Sistema de Control de Inventario</title>
+    <style>
+        /* Reset y base */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-box-sizing: border-box;
+            -moz-box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+            background: #f3f4f6;
+            min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            overflow-x: hidden;
+        }
+
+        /* Prevenir zoom en iOS */
+        input, select, textarea {
+            font-size: 16px !important;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0.75rem;
+        }
+
+        .card {
+            background: white;
+            border-radius: 0.75rem;
+            padding: 1.25rem;
+            margin-bottom: 0.75rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            -webkit-box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .header {
+            background: #2563eb;
+            color: white;
+            padding: 0.75rem;
+            text-align: center;
+        }
+
+        .btn {
+            padding: 0.6rem 1.25rem;
+            border: none;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            -webkit-transition: all 0.2s;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+        }
+
+        .btn:active {
+            transform: scale(0.98);
+            -webkit-transform: scale(0.98);
+        }
+
+        .btn-primary {
+            background: #2563eb;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #1d4ed8;
+        }
+
+        .btn-success {
+            background: #059669;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #047857;
+        }
+        
+        .btn-secondary {
+            background: #6b7280;
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background: #4b5563;
+        }
+
+        .btn-danger {
+            background: #dc2626;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #b91c1c;
+        }
+
+        .btn-whatsapp {
+            background: #25D366;
+            color: white;
+        }
+
+        .btn-whatsapp:hover {
+            background: #128C7E;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(37, 211, 102, 0.4);
+        }
+
+        .btn-whatsapp:active {
+            transform: scale(0.98) translateY(0);
+        }
+
+        .input {
+            width: 100%;
+            padding: 0.5rem;
+            border: 2px solid #d1d5db;
+            border-radius: 0.5rem;
+            font-size: 0.9rem;
+            text-align: center;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+        }
+
+        .input:focus {
+            outline: none;
+            border-color: #2563eb;
+            background: #eff6ff;
+        }
+
+        .input:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            background: #f3f4f6;
+        }
+
+        .count-input {
+            font-size: 2rem;
+            font-weight: bold;
+            max-width: 100px;
+            background: #fef3c7;
+            border: 3px solid #f59e0b;
+            text-align: center;
+        }
+
+        .count-input:focus {
+            background: #fef9c3;
+            border-color: #d97706;
+        }
+
+        .flex {
+            display: flex;
+            display: -webkit-flex;
+            align-items: center;
+            -webkit-align-items: center;
+            gap: 1rem;
+        }
+
+        .flex-wrap {
+            flex-wrap: wrap;
+            -webkit-flex-wrap: wrap;
+        }
+
+        .flex-col {
+            flex-direction: column;
+            -webkit-flex-direction: column;
+        }
+
+        .justify-center {
+            justify-content: center;
+            -webkit-justify-content: center;
+        }
+
+        .justify-between {
+            justify-content: space-between;
+            -webkit-justify-content: space-between;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .grid {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .grid-2 {
+            grid-template-columns: 1fr 1fr;
+        }
+
+        .supplier-card {
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            color: white;
+            border-radius: 1rem;
+            padding: 1rem;
+            cursor: pointer;
+            transition: transform 0.2s;
+            -webkit-transition: transform 0.2s;
+            margin-bottom: 0.75rem;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .supplier-card:hover {
+            transform: translateY(-2px);
+            -webkit-transform: translateY(-2px);
+        }
+
+        .supplier-card:active {
+            transform: scale(0.98);
+            -webkit-transform: scale(0.98);
+        }
+
+        .product-card {
+            border-left: 4px solid #d1d5db;
+            transition: border-color 0.3s;
+            -webkit-transition: border-color 0.3s;
+        }
+
+        .product-card.counted {
+            border-left-color: #059669;
+        }
+
+        .badge {
+            padding: 0.2rem 0.6rem;
+            border-radius: 9999px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .badge-green {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .badge-yellow {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .badge-blue {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .count-button {
+            width: 3rem;
+            height: 3rem;
+            border-radius: 0.75rem;
+            border: none;
+            font-size: 1.5rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.2s;
+            -webkit-transition: all 0.2s;
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+        }
+
+        .count-button:active {
+            transform: scale(0.95);
+            -webkit-transform: scale(0.95);
+        }
+
+        .count-button.plus {
+            background: #059669;
+            color: white;
+        }
+
+        .count-button.minus {
+            background: #dc2626;
+            color: white;
+        }
+
+        .fixed-bottom {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            padding: 0.75rem;
+            border-top: 1px solid #d1d5db;
+            box-shadow: 0 -4px 6px rgba(0,0,0,0.1);
+            -webkit-box-shadow: 0 -4px 6px rgba(0,0,0,0.1);
+            z-index: 10;
+        }
+
+        .progress-info {
+            background: #dbeafe;
+            color: #1e40af;
+            padding: 0.5rem;
+            border-radius: 0.5rem;
+            margin-bottom: 0.75rem;
+            font-size: 0.8rem;
+        }
+
+        .results-card {
+            background: white;
+            border-radius: 0.75rem;
+            padding: 0;
+            margin-bottom: 0.75rem;
+            border-left: 4px solid #2563eb;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            -webkit-box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .results-header {
+            cursor: pointer;
+            transition: all 0.2s;
+            -webkit-transition: all 0.2s;
+            padding: 1rem;
+            border-bottom: 1px solid #e5e7eb;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .results-header:hover {
+            background: #f8fafc;
+        }
+
+        .results-card.expanded .results-header {
+            background: #f0f9ff;
+        }
+
+        .results-content {
+            padding: 1rem;
+            border-top: 1px solid #e5e7eb;
+            background: #f9fafb;
+        }
+
+        .expand-icon {
+            transition: transform 0.2s;
+            -webkit-transition: transform 0.2s;
+            font-size: 1rem;
+            color: #6b7280;
+            font-weight: bold;
+            display: inline-block;
+        }
+
+        .expand-icon.rotated {
+            transform: rotate(180deg);
+            -webkit-transform: rotate(180deg);
+            color: #059669;
+        }
+
+        .results-product {
+            padding: 0.5rem;
+            border-radius: 0.5rem;
+            margin-bottom: 0.5rem;
+            border-left: 3px solid #d1d5db;
+        }
+
+        .results-product.has-count {
+            background: #f0fdf4;
+            border-left-color: #059669;
+        }
+
+        .results-product.no-count {
+            background: #fefce8;
+            border-left-color: #eab308;
+        }
+
+        .order-summary {
+            background: #f8fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 0.75rem;
+            padding: 0.75rem;
+            margin-top: 0.75rem;
+        }
+
+        .order-item {
+            display: flex;
+            display: -webkit-flex;
+            justify-content: space-between;
+            -webkit-justify-content: space-between;
+            align-items: center;
+            -webkit-align-items: center;
+            padding: 0.5rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .order-item:last-child {
+            border-bottom: none;
+        }
+
+        .order-total {
+            background: #2563eb;
+            color: white;
+            padding: 0.5rem;
+            border-radius: 0.5rem;
+            font-weight: bold;
+            text-align: center;
+            margin-top: 0.5rem;
+        }
+
+        .admin-header {
+            background: #f59e0b;
+        }
+
+        .import-stats {
+            background: #f0fdf4;
+            border: 2px solid #bbf7d0;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .import-error {
+            background: #fef2f2;
+            border: 2px solid #fecaca;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            color: #dc2626;
+        }
+
+        .preview-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+            font-size: 0.875rem;
+        }
+
+        .preview-table th,
+        .preview-table td {
+            border: 1px solid #d1d5db;
+            padding: 0.5rem;
+            text-align: left;
+        }
+
+        .preview-table th {
+            background: #f3f4f6;
+            font-weight: 600;
+            position: sticky;
+            position: -webkit-sticky;
+            top: 0;
+            z-index: 5;
+        }
+
+        .preview-table tr:nth-child(even) {
+            background: #f9fafb;
+        }
+        
+        .admin-list-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem;
+            border-bottom: 1px solid #e5e7eb;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        .admin-list-item:hover {
+            background-color: #f9fafb;
+        }
+
+        .admin-list-item:last-child {
+            border-bottom: none;
+        }
+        
+        .product-list-container {
+            background-color: #f8fafc;
+            padding: 0.75rem;
+            border-top: 1px solid #e5e7eb;
+        }
+        
+        .product-admin-item {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 0.75rem;
+            align-items: center;
+            padding: 0.5rem;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .product-admin-item:last-child {
+            border-bottom: none;
+        }
+
+        .expand-arrow {
+            display: inline-block;
+            transition: transform 0.2s;
+        }
+        
+        .expanded .expand-arrow {
+            transform: rotate(90deg);
+        }
+
+        /* Calendario horizontal */
+        .calendar-container {
+            background: white;
+            border-radius: 0.75rem;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .calendar-scroll {
+            display: flex;
+            overflow-x: auto;
+            gap: 0.5rem;
+            padding: 0.5rem 0;
+            scroll-behavior: smooth;
+        }
+
+        .calendar-day {
+            min-width: 100px;
+            flex-shrink: 0;
+            background: #f8fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 0.75rem;
+            padding: 0.75rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+        }
+
+        .calendar-day:hover {
+            background: #e5e7eb;
+            border-color: #d1d5db;
+        }
+
+        .calendar-day.active {
+            background: #2563eb;
+            border-color: #2563eb;
+            color: white;
+            transform: scale(1.05);
+        }
+
+        .calendar-day.today {
+            border-color: #f59e0b;
+            background: #fefbf3;
+            font-weight: bold;
+        }
+
+        .calendar-day.today.active {
+            background: #2563eb;
+            color: white;
+        }
+
+        .day-name {
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+            text-transform: uppercase;
+        }
+
+        .day-number {
+            font-size: 1.25rem;
+            font-weight: bold;
+            margin-bottom: 0.25rem;
+        }
+
+        .supplier-visits {
+            margin-top: 0.5rem;
+        }
+
+        .visit-dot {
+            width: 6px;
+            height: 6px;
+            background: #059669;
+            border-radius: 50%;
+            display: inline-block;
+            margin: 0 1px;
+        }
+
+        .visit-counter {
+            font-size: 0.65rem;
+            background: #059669;
+            color: white;
+            border-radius: 10px;
+            padding: 0.1rem 0.4rem;
+            margin-top: 0.25rem;
+            display: inline-block;
+        }
+
+        /* Media queries mejoradas */
+        @media (max-width: 768px) {
+            .container {
+                padding: 0.5rem;
+            }
+
+            .card {
+                padding: 0.75rem;
+                margin-bottom: 0.5rem;
+            }
+
+            .flex {
+                gap: 0.5rem;
+            }
+
+            .grid-2 {
+                grid-template-columns: 1fr;
+            }
+
+            .count-input {
+                max-width: 80px;
+                font-size: 1.5rem;
+            }
+
+            .count-button {
+                width: 2.5rem;
+                height: 2.5rem;
+            }
+
+            .preview-table {
+                font-size: 0.75rem;
+            }
+
+            .preview-table th,
+            .preview-table td {
+                padding: 0.25rem;
+            }
+
+            .results-product {
+                padding: 0.375rem;
+                margin-bottom: 0.375rem;
+            }
+
+            .badge {
+                padding: 0.15rem 0.5rem;
+                font-size: 0.65rem;
+            }
+
+            .calendar-day {
+                min-width: 80px;
+                padding: 0.5rem;
+            }
+
+            .day-number {
+                font-size: 1rem;
+            }
+
+            h1 {
+                font-size: 1.1rem !important;
+            }
+
+            h2 {
+                font-size: 1.1rem !important;
+            }
+        }
+
+        /* Mejoras para iOS */
+        @supports (-webkit-touch-callout: none) {
+            body {
+                -webkit-text-size-adjust: 100%;
+            }
+
+            .input {
+                font-size: 16px !important;
+            }
+        }
+
+        /* Print styles */
+        @media print {
+            .btn, .fixed-bottom {
+                display: none !important;
+            }
+
+            body {
+                background: white;
+            }
+
+            .card {
+                box-shadow: none;
+                -webkit-box-shadow: none;
+                break-inside: avoid;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <div id="loginScreen">
+            <div class="header">
+                <h1 style="font-size: 1.5rem; margin-bottom: 0.25rem;">LÍDER MARKET</h1>
+                <p style="font-size: 0.875rem;">Sistema de Control de Inventario</p>
+            </div>
+            <div class="container">
+                <div class="card" style="max-width: 400px; margin: 2rem auto;">
+                    <h2 class="text-center" style="margin-bottom: 1.5rem;">Iniciar Sesión</h2>
+                    
+                    <div class="flex" style="margin-bottom: 1rem; background: #f3f4f6; border-radius: 0.5rem; padding: 0.25rem;">
+                        <button id="userTab" class="btn" style="flex: 1; background: #2563eb; color: white;">Usuario</button>
+                        <button id="adminTab" class="btn" style="flex: 1; background: transparent; color: #6b7280;">Admin</button>
+                    </div>
+
+                    <input type="text" id="username" class="input" placeholder="Ingrese su nombre" style="margin-bottom: 1rem;" autocomplete="off">
+                    
+                    <div id="passwordField" class="hidden" style="margin-bottom: 1rem;">
+                        <input type="password" id="password" class="input" placeholder="Ingrese la contraseña de administrador" autocomplete="off">
+                    </div>
+
+                    <button id="loginBtn" class="btn btn-primary" style="width: 100%;">Ingresar</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="userDashboard" class="hidden">
+            <div class="header">
+                <div class="flex justify-between">
+                    <div>
+                        <h1 style="font-size: 1.25rem; margin-bottom: 0.1rem;">LÍDER MARKET</h1>
+                        <p id="welcomeUser" style="font-size: 0.875rem;">Hola, Usuario</p>
+                    </div>
+                    <button id="logoutBtn" class="btn" style="background: rgba(255,255,255,0.2); padding: 0.5rem 1rem; font-size: 0.875rem;">Salir</button>
+                </div>
+            </div>
+
+            <div class="container">
+                <div class="flex" style="margin-bottom: 1rem; background: #f3f4f6; border-radius: 0.75rem; padding: 0.25rem;">
+                    <button id="countingTab" class="btn" style="flex: 1; background: #2563eb; color: white; margin: 0;">📦 Conteo</button>
+                    <button id="resultsTab" class="btn" style="flex: 1; background: transparent; color: #6b7280; margin: 0;">📊 Resultados</button>
+                </div>
+
+                <div id="countingSection">
+                    <div class="calendar-container">
+                        <h3 style="margin-bottom: 0.75rem; font-size: 1rem; font-weight: 600; color: #374151;">📅 Programación Semanal de Visitas</h3>
+                        <div id="weeklyCalendar" class="calendar-scroll">
+                            </div>
+                    </div>
+
+                    <h2 style="margin-bottom: 0.75rem; font-size: 1.25rem;">Visitas Programadas</h2>
+                    <div id="suppliersList"></div>
+
+                    <h2 style="margin-top: 1.5rem; margin-bottom: 0.75rem; font-size: 1.25rem; border-top: 1px solid #d1d5db; padding-top: 1rem;">Consulta General de Proveedores</h2>
+                    <div id="allSuppliersList"></div>
+                </div>
+
+                <div id="resultsSection" class="hidden">
+                    <div id="resultsContainer"></div>
+                </div>
+            </div>
+        </div>
+
+        <div id="adminDashboard" class="hidden">
+            <div class="header admin-header">
+                <div class="flex justify-between">
+                    <div>
+                        <h1 style="font-size: 1.25rem; margin-bottom: 0.1rem;">LÍDER MARKET - ADMIN</h1>
+                        <p style="font-size: 0.875rem;">Panel de Administración</p>
+                    </div>
+                    <button id="adminLogoutBtn" class="btn" style="background: rgba(255,255,255,0.2); padding: 0.5rem 1rem; font-size: 0.875rem;">Salir</button>
+                </div>
+            </div>
+
+            <div class="container">
+                <div class="card">
+                    <h2 style="margin-bottom: 0.75rem; font-size: 1.25rem;">📋 Importación de Productos</h2>
+                    
+                    <div style="background: #dbeafe; padding: 0.75rem; border-radius: 0.5rem; margin-bottom: 0.75rem;">
+                        <h3 style="font-weight: 600; margin-bottom: 0.25rem; color: #1e40af; font-size: 0.95rem;">📝 Formato requerido (6 columnas):</h3>
+                        <div style="font-family: monospace; font-size: 0.8rem; line-height: 1.3; background: white; padding: 0.5rem; border-radius: 0.25rem; margin: 0.25rem 0;">
+                            <strong>A:</strong> Proveedor | <strong>B:</strong> Producto | <strong>C:</strong> Max Stock | <strong>D:</strong> Código | <strong>E:</strong> Unidades/Paq | <strong>F:</strong> Tipo
+                        </div>
+                        <div style="background: #059669; color: white; padding: 0.375rem 0.5rem; border-radius: 0.25rem; font-size: 0.8rem;">
+                            💡 <strong>Ejemplo:</strong> Coca-Cola&nbsp;&nbsp;&nbsp;&nbsp;Coca Cola 600ml&nbsp;&nbsp;&nbsp;&nbsp;240&nbsp;&nbsp;&nbsp;&nbsp;7501055365050&nbsp;&nbsp;&nbsp;&nbsp;24&nbsp;&nbsp;&nbsp;&nbsp;PAQUETE
+                        </div>
+                    </div>
+
+                    <textarea id="importData" class="input" 
+                              style="min-height: 150px; font-family: monospace; font-size: 0.8rem; text-align: left;"
+                              placeholder="Pega aquí los datos copiados desde Excel/Google Sheets...
+
+📋 Formato: Proveedor  Producto  Max Stock  Código  Unidades/Paq  Tipo
+
+Ejemplo:
+Coca-Cola	Coca Cola 600ml	240	7501055365050	24	PAQUETE
+Panadería	Bolillo	100	BOLILLO001	1	INDIVIDUAL"></textarea>
+                    
+                    <div class="flex" style="gap: 1rem; margin-top: 0.75rem;">
+                        <button id="previewBtn" class="btn btn-primary" style="flex: 1;">👁️ Vista Previa</button>
+                        <button id="saveBtn" class="btn btn-success" style="flex: 1;" disabled>💾 Guardar</button>
+                        <button id="clearBtn" class="btn btn-danger">🗑️ Limpiar</button>
+                    </div>
+                    
+                    <button id="loadExampleBtn" class="btn" style="background: #059669; color: white; margin-top: 0.75rem; width: 100%;">
+                        ⚡ Cargar Datos de Prueba
+                    </button>
+
+                    <div id="previewContainer" class="hidden" style="margin-top: 1rem;"></div>
+                </div>
+
+                <div class="card">
+                    <h2 style="margin-bottom: 0.75rem; font-size: 1.25rem;">⚙️ Gestión de Datos</h2>
+
+                    <div id="managementInfo" style="background: #f8fafc; padding: 0.75rem; border-radius: 0.5rem; margin-bottom: 0.75rem;">
+                        <div class="flex justify-between" style="margin-bottom: 0.25rem;">
+                            <span><strong>Proveedores:</strong> <span id="supplierCount">0</span></span>
+                            <span><strong>Productos:</strong> <span id="productCount">0</span></span>
+                        </div>
+                    </div>
+
+                    <button id="clearAllBtn" class="btn btn-danger" style="width: 100%;">🗑️ Limpiar Todos los Datos</button>
+                </div>
+
+                <div class="card" style="padding: 0;">
+                     <h2 style="font-size: 1.25rem; padding: 1.25rem 1.25rem 0 1.25rem;">✏️ Editar Proveedores y Productos</h2>
+                     <p style="font-size: 0.8rem; color: #6b7280; padding: 0 1.25rem 0.75rem 1.25rem; border-bottom: 1px solid #e5e7eb;">Haz clic en un proveedor para ver/editar sus productos.</p>
+                    <div id="adminSuppliersList" style="max-height: 600px; overflow-y: auto;">
+                        </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="countingScreen" class="hidden">
+            <div class="header">
+                <div class="flex justify-between">
+                    <div>
+                        <h1 id="supplierName" style="font-size: 1.25rem; margin-bottom: 0.1rem;">Proveedor</h1>
+                        <p id="currentUser" style="font-size: 0.875rem;">Usuario</p>
+                    </div>
+                    <button id="backBtn" class="btn" style="background: rgba(255,255,255,0.2); padding: 0.5rem 1rem; font-size: 0.875rem;">← Volver</button>
+                </div>
+            </div>
+
+            <div class="container" style="padding-bottom: 6rem;">
+                <div id="progressInfo" class="progress-info"></div>
+                
+                <div style="background: #fef3c7; border: 2px solid #f59e0b; border-radius: 0.75rem; padding: 0.75rem; margin-bottom: 0.75rem;">
+                    <div class="flex justify-between" style="align-items: center;">
+                        <div>
+                            <h3 style="font-weight: 600; margin-bottom: 0.1rem; color: #92400e; font-size: 0.9rem;">🔄 Reiniciar Conteos</h3>
+                            <p style="font-size: 0.75rem; color: #92400e; margin: 0;">Poner todos los conteos en cero para empezar de nuevo</p>
+                        </div>
+                        <button id="clearCountsBtn" class="btn" style="background: #f59e0b; color: white; margin: 0; padding: 0.5rem 0.75rem; font-size: 0.85rem;">🗑️ Limpiar</button>
+                    </div>
+                </div>
+                
+                <div id="productsList"></div>
+            </div>
+
+            <div id="finishSection" class="fixed-bottom">
+                <button id="finishBtn" class="btn btn-success" style="width: 100%; padding: 0.75rem; font-size: 1rem;">
+                    ✅ Terminar Conteo
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            'use strict';
+            
+            // Variables globales encapsuladas
+            var currentUser = null;
+            var isAdmin = false;
+            var currentSupplier = null;
+            var inventoryCounts = {};
+            var previewData = [];
+            var adminPassword = 'admin123';
+            var selectedDay = null;
+            var supplierVisits = {}; // Para gestionar las visitas programadas
+
+            // Datos iniciales
+            var suppliers = [
+                { id: 'prov1', name: 'Distribuidora San Juan', type: 'individual' },
+                { id: 'prov2', name: 'COCA COLA', type: 'package', packageSize: 24 }
+            ];
+
+            var products = {
+                'prov1': [
+                    { id: 'prod1', name: 'Leche Alpura 1L', barcode: '7501199100032', maxStock: 30, type: 'individual', packageSize: 1 },
+                    { id: 'prod1b', name: 'Pan Bimbo Grande', barcode: '7501000100032', maxStock: 25, type: 'individual', packageSize: 1 }
+                ],
+                'prov2': [
+                    { id: 'prod2', name: 'Coca Cola 600ml', barcode: '7501055365050', maxStock: 240, type: 'package', packageSize: 24 },
+                    { id: 'prod2b', name: 'Sprite 600ml', barcode: '7501055365060', maxStock: 120, type: 'package', packageSize: 24 }
+                ]
+            };
+
+            // Compatibilidad con navegadores antiguos
+            if (!Array.prototype.find) {
+                Array.prototype.find = function(predicate) {
+                    for (var i = 0; i < this.length; i++) { if (predicate(this[i], i, this)) { return this[i]; } }
+                    return undefined;
+                };
+            }
+            if (!Array.prototype.filter) {
+                Array.prototype.filter = function(predicate) {
+                    var newArray = [];
+                    for (var i = 0; i < this.length; i++) { if (predicate(this[i], i, this)) { newArray.push(this[i]); } }
+                    return newArray;
+                };
+            }
+
+            // Función para generar el calendario semanal
+            function generateWeeklyCalendar() {
+                var container = document.getElementById('weeklyCalendar');
+                var today = new Date();
+                var currentDay = today.getDay();
+                var mondayOffset = currentDay === 0 ? -6 : 1 - currentDay;
+                var monday = new Date(today);
+                monday.setDate(today.getDate() + mondayOffset);
+                var dayNames = ['LUN', 'MAR', 'MIÉ', 'JUE', 'VIE', 'SÁB', 'DOM'];
+                var monthNames = ['ENE', 'FEB', 'MAR', 'ABR', 'MAY', 'JUN', 'JUL', 'AGO', 'SEP', 'OCT', 'NOV', 'DIC'];
+                container.innerHTML = '';
+                for (var i = 0; i < 7; i++) {
+                    var currentDate = new Date(monday);
+                    currentDate.setDate(monday.getDate() + i);
+                    var dayElement = document.createElement('div');
+                    dayElement.className = 'calendar-day';
+                    dayElement.setAttribute('data-date', currentDate.toDateString());
+                    if (currentDate.toDateString() === today.toDateString()) { dayElement.classList.add('today'); }
+                    var visitsForDay = getVisitsForDate(currentDate.toDateString());
+                    var visitCount = visitsForDay.length;
+                    dayElement.innerHTML = '<div class="day-name">' + dayNames[i] + '</div><div class="day-number">' + currentDate.getDate() + '</div><div style="font-size: 0.65rem; color: #6b7280;">' + monthNames[currentDate.getMonth()] + '</div>' + (visitCount > 0 ? '<div class="visit-counter">' + visitCount + ' visitas</div>' : '<div style="font-size: 0.65rem; color: #9ca3af;">Sin visitas</div>');
+                    dayElement.addEventListener('click', function() { selectDay(this); });
+                    container.appendChild(dayElement);
+                }
+                setTimeout(function() {
+                    var todayElement = container.querySelector('.today');
+                    if (todayElement) { todayElement.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' }); }
+                }, 100);
+            }
+
+            function selectDay(dayElement) {
+                var previousSelected = document.querySelector('.calendar-day.active');
+                if (previousSelected) { previousSelected.classList.remove('active'); }
+                dayElement.classList.add('active');
+                selectedDay = dayElement.getAttribute('data-date');
+                updateSuppliersForSelectedDay();
+            }
+
+            function getVisitsForDate(dateString) { return supplierVisits[dateString] || []; }
+            function addVisitToDate(dateString, supplierId) {
+                if (!supplierVisits[dateString]) { supplierVisits[dateString] = []; }
+                if (supplierVisits[dateString].indexOf(supplierId) === -1) { supplierVisits[dateString].push(supplierId); }
+                generateWeeklyCalendar();
+            }
+            function removeVisitFromDate(dateString, supplierId) {
+                if (supplierVisits[dateString]) {
+                    var index = supplierVisits[dateString].indexOf(supplierId);
+                    if (index > -1) { supplierVisits[dateString].splice(index, 1); }
+                    if (supplierVisits[dateString].length === 0) { delete supplierVisits[dateString]; }
+                }
+                generateWeeklyCalendar();
+            }
+
+            function updateSuppliersForSelectedDay() {
+                var container = document.getElementById('suppliersList');
+                container.innerHTML = '';
+                if (!selectedDay) {
+                    container.innerHTML = '<div class="card" style="background: #f3f4f6; text-align: center; color: #6b7280;">Selecciona un día en el calendario para ver las visitas programadas.</div>';
+                    return;
+                }
+                var visitsForDay = getVisitsForDate(selectedDay);
+                var selectedDate = new Date(selectedDay);
+                var dayName = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'][selectedDate.getDay()];
+                var formattedDate = selectedDate.getDate() + '/' + (selectedDate.getMonth() + 1);
+                var suppliersToShow = suppliers.filter(function(s) { return visitsForDay.indexOf(s.id) > -1; });
+
+                if (suppliersToShow.length === 0) {
+                     container.innerHTML = '<div class="card" style="background: #f3f4f6; text-align: center; color: #6b7280;">No hay visitas programadas para el ' + dayName + ' ' + formattedDate + '.</div>';
+                     return;
+                }
+
+                suppliersToShow.sort(function(a, b) { return a.name.localeCompare(b.name); });
+                suppliersToShow.forEach(function(supplier) {
+                    var productCount = products[supplier.id] ? products[supplier.id].length : 0;
+                    var countedProducts = getCountedProductsForSupplier(supplier.id);
+                    var div = document.createElement('div');
+                    div.className = 'supplier-card';
+                    div.style.background = 'linear-gradient(135deg, #059669, #047857)';
+                    div.style.border = '3px solid #10b981';
+                    
+                    div.innerHTML = '<div class="flex justify-between" style="align-items: center;"><div><h3 style="font-size: 1.1rem; margin-bottom: 0.25rem;">' + supplier.name + '</h3><div class="flex" style="gap: 0.5rem; flex-wrap: wrap;"><span class="badge badge-blue">' + productCount + ' productos</span>' + (countedProducts > 0 ? '<span class="badge badge-green">' + countedProducts + ' contados</span>' : '') + '<span class="badge" style="background: rgba(255,255,255,0.3); color: white;">📅 Programado</span></div></div><div style="font-size: 1.5rem;">📦</div></div>';
+                    div.addEventListener('click', function() {
+                        var action = confirm('¿Qué deseas hacer para "' + supplier.name + '"?\n\nOK = Comenzar conteo\nCancelar = Desprogramar visita');
+                        if (action) {
+                            currentSupplier = supplier;
+                            loadCountingScreen();
+                        } else {
+                            if (confirm('¿Confirmas desprogramar a "' + supplier.name + '" de ' + dayName + ' ' + formattedDate + '?')) {
+                                removeVisitFromDate(selectedDay, supplier.id);
+                                updateSuppliersForSelectedDay();
+                            }
+                        }
+                    });
+                    container.appendChild(div);
+                });
+            }
+
+            function calculateOrder(product, currentCount) {
+                var needed = Math.max(0, product.maxStock - currentCount);
+                if (product.type === 'package' && product.packageSize > 1) {
+                    var packagesNeeded = Math.ceil(needed / product.packageSize);
+                    var totalUnitsWithPackages = currentCount + (packagesNeeded * product.packageSize);
+                    var excess = Math.max(0, totalUnitsWithPackages - product.maxStock);
+                    var maxAllowedExcess = Math.floor(product.packageSize * 0.4);
+                    var finalPackagesNeeded = packagesNeeded;
+                    if (excess > maxAllowedExcess && packagesNeeded > 0) {
+                        finalPackagesNeeded = Math.max(0, packagesNeeded - 1);
+                    }
+                    var newTotalUnits = currentCount + (finalPackagesNeeded * product.packageSize);
+                    return { needed: needed, packagesNeeded: finalPackagesNeeded, totalUnits: newTotalUnits, excess: excess, adjustedBy40Rule: packagesNeeded !== finalPackagesNeeded, orderUnit: 'paquetes', orderQuantity: finalPackagesNeeded, unitsPerPackage: product.packageSize };
+                } else {
+                    return { needed: needed, packagesNeeded: needed, totalUnits: currentCount + needed, excess: 0, adjustedBy40Rule: false, orderUnit: 'unidades', orderQuantity: needed, unitsPerPackage: 1 };
+                }
+            }
+
+            function determineSupplierType(items) {
+                var hasPackages = items.some(function(item) { return item.type === 'package'; });
+                var hasIndividuals = items.some(function(item) { return item.type === 'individual'; });
+                if (hasPackages && hasIndividuals) return 'mixto';
+                if (hasPackages) return 'package';
+                return 'individual';
+            }
+
+            function showScreen(screenId) {
+                var screens = document.querySelectorAll('#app > div');
+                for (var i = 0; i < screens.length; i++) { screens[i].classList.add('hidden'); }
+                document.getElementById(screenId).classList.remove('hidden');
+            }
+
+            function updateManagementInfo() {
+                var productCount = 0;
+                for (var key in products) { productCount += products[key].length; }
+                document.getElementById('supplierCount').textContent = suppliers.length;
+                document.getElementById('productCount').textContent = productCount;
+            }
+
+            function loadAllSuppliers() {
+                var container = document.getElementById('allSuppliersList');
+                container.innerHTML = '';
+                if (suppliers.length === 0) {
+                    container.innerHTML = '<div class="card text-center" style="padding: 2rem;"><div style="font-size: 3rem; margin-bottom: 1rem;">📦</div><h3 style="margin-bottom: 0.5rem;">No hay proveedores</h3><p style="color: #6b7280;">Importa productos en el panel de Admin.</p></div>';
+                    return;
+                }
+                var sortedSuppliers = suppliers.slice().sort(function(a, b) { return a.name.localeCompare(b.name); });
+                sortedSuppliers.forEach(function(supplier) {
+                    var productCount = products[supplier.id] ? products[supplier.id].length : 0;
+                    var countedProducts = getCountedProductsForSupplier(supplier.id);
+                    var isScheduledForDay = selectedDay ? getVisitsForDate(selectedDay).indexOf(supplier.id) > -1 : false;
+
+                    var div = document.createElement('div');
+                    div.className = 'supplier-card';
+                    
+                    div.innerHTML = '<div class="flex justify-between" style="align-items: center;"><div><h3 style="font-size: 1.1rem; margin-bottom: 0.25rem;">' + supplier.name + '</h3><div class="flex" style="gap: 0.5rem; flex-wrap: wrap;"><span class="badge badge-blue">' + productCount + ' productos</span>' + (countedProducts > 0 ? '<span class="badge badge-green">' + countedProducts + ' contados</span>' : '') + '</div></div><div style="font-size: 1.5rem;">📦</div></div>';
+                    
+                    div.addEventListener('click', function() {
+                        if (isScheduledForDay) {
+                            if(confirm('"' + supplier.name + '" ya está programado para hoy. ¿Deseas iniciar el conteo de todas formas?')) {
+                                currentSupplier = supplier;
+                                loadCountingScreen();
+                            }
+                        } else if (selectedDay) {
+                            var selectedDate = new Date(selectedDay);
+                            var dayName = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'][selectedDate.getDay()];
+                            var formattedDate = selectedDate.getDate() + '/' + (selectedDate.getMonth() + 1);
+                             if (confirm('¿Programar a "' + supplier.name + '" para el ' + dayName + ' ' + formattedDate + ' y comenzar a contar?')) {
+                                addVisitToDate(selectedDay, supplier.id);
+                                updateSuppliersForSelectedDay();
+                                currentSupplier = supplier;
+                                loadCountingScreen();
+                            }
+                        } else {
+                            if (confirm('No has seleccionado un día. ¿Deseas iniciar un conteo para "' + supplier.name + '" sin programar una visita?')) {
+                                currentSupplier = supplier;
+                                loadCountingScreen();
+                            }
+                        }
+                    });
+                    container.appendChild(div);
+                });
+            }
+
+            function getCountedProductsForSupplier(supplierId) {
+                var supplierProducts = products[supplierId] || [];
+                return supplierProducts.filter(function(p) { return inventoryCounts[p.id] !== undefined; }).length;
+            }
+
+            function loadCountingScreen() {
+                if (!currentSupplier) return;
+                showScreen('countingScreen');
+                document.getElementById('supplierName').textContent = currentSupplier.name;
+                document.getElementById('currentUser').textContent = currentUser;
+                var supplierProducts = products[currentSupplier.id] || [];
+                var container = document.getElementById('productsList');
+                container.innerHTML = '';
+                if (supplierProducts.length === 0) {
+                    container.innerHTML = '<div class="card text-center" style="padding: 2rem;"><div style="font-size: 3rem; margin-bottom: 1rem;">📦</div><h3 style="margin-bottom: 0.5rem;">No hay productos para este proveedor.</h3></div>';
+                    return;
+                }
+                updateProgressInfo();
+                supplierProducts.forEach(function(product) {
+                    var currentCount = parseInt(inventoryCounts[product.id]) || 0;
+                    var isCounted = inventoryCounts[product.id] !== undefined;
+                    var div = document.createElement('div');
+                    div.className = 'card product-card' + (isCounted ? ' counted' : '');
+                    div.innerHTML = '<div class="flex justify-between" style="align-items: center; margin-bottom: 1rem;"><div style="flex: 1;"><h3 style="font-size: 1.1rem; margin-bottom: 0.25rem;">' + product.name + '</h3><div class="flex" style="gap: 0.5rem; flex-wrap: wrap;"><span class="badge badge-blue">Max: ' + product.maxStock + '</span>' + (product.type === 'package' ? '<span class="badge" style="background: #f3e8ff; color: #7c3aed;">📦 ' + product.packageSize + 'u/paq</span>' : '<span class="badge badge-green">🔸 Individual</span>') + (isCounted ? '<span class="badge badge-green">✅ Contado</span>' : '<span class="badge badge-yellow">⏳ Pendiente</span>') + '</div></div></div><div class="flex justify-center" style="align-items: center; gap: 1rem;"><button class="count-button minus" onclick="window.adjustCount(\'' + product.id + '\', -1)">-</button><input type="number" class="input count-input" id="count-' + product.id + '" value="' + currentCount + '" onchange="window.updateCount(\'' + product.id + '\', this.value)" min="0"><button class="count-button plus" onclick="window.adjustCount(\'' + product.id + '\', 1)">+</button></div>';
+                    container.appendChild(div);
+                });
+            }
+
+            window.adjustCount = function(productId, change) {
+                var input = document.getElementById('count-' + productId);
+                var newValue = Math.max(0, (parseInt(input.value) || 0) + change);
+                input.value = newValue;
+                window.updateCount(productId, newValue);
+            };
+
+            window.updateCount = function(productId, value) {
+                inventoryCounts[productId] = parseInt(value) || 0;
+                var productCard = document.getElementById('count-' + productId).closest('.product-card');
+                productCard.classList.add('counted');
+                updateProgressInfo();
+            };
+
+            function updateProgressInfo() {
+                if (!currentSupplier) return;
+                var supplierProducts = products[currentSupplier.id] || [];
+                var counted = getCountedProductsForSupplier(currentSupplier.id);
+                var percentage = supplierProducts.length > 0 ? Math.round((counted / supplierProducts.length) * 100) : 0;
+                document.getElementById('progressInfo').innerHTML = '📊 Progreso: ' + counted + ' de ' + supplierProducts.length + ' productos contados (' + percentage + '%)';
+            }
+
+            function clearCounts() {
+                if (!currentSupplier) return;
+                if (confirm('¿Limpiar todos los conteos de este proveedor?')) {
+                    var supplierProducts = products[currentSupplier.id] || [];
+                    supplierProducts.forEach(function(p) { delete inventoryCounts[p.id]; });
+                    loadCountingScreen();
+                }
+            }
+
+            function finishCounting() {
+                if (!currentSupplier) return;
+                var supplierProducts = products[currentSupplier.id] || [];
+                var counted = getCountedProductsForSupplier(currentSupplier.id);
+                if (counted === 0) { alert('⚠️ No has contado ningún producto.'); return; }
+                var message = 'Has contado ' + counted + ' de ' + supplierProducts.length + ' productos.\n\n';
+                if (counted < supplierProducts.length) {
+                    message += '⚠️ Faltan ' + (supplierProducts.length - counted) + ' por contar.\n\n¿Continuar de todas formas?';
+                    if (!confirm(message)) { return; }
+                } else {
+                    alert('✅ ¡Conteo completo!');
+                }
+                showScreen('userDashboard');
+                document.getElementById('resultsTab').click();
+            }
+
+            function parseImportData(rawData) {
+                var lines = rawData.trim().split('\n');
+                var parsedData = []; var errors = [];
+                for (var i = 0; i < lines.length; i++) {
+                    var line = lines[i].trim(); if (!line) continue;
+                    var columns = line.split('\t');
+                    if (columns.length < 6) { errors.push('Línea ' + (i + 1) + ': Faltan columnas (se requieren 6)'); continue; }
+                    var [supplier, productName, maxStock, barcode, packageInfo, typeInfo] = columns.map(function(c) { return c.trim(); });
+                    if (!supplier || !productName) { errors.push('Línea ' + (i + 1) + ': Proveedor o producto vacío'); continue; }
+                    var maxStockNum = parseInt(maxStock);
+                    if (isNaN(maxStockNum) || maxStockNum <= 0) { errors.push('Línea ' + (i + 1) + ': Max Stock inválido'); continue; }
+                    var type = typeInfo.toLowerCase().includes('paquete') ? 'package' : 'individual';
+                    var packageSize = type === 'package' ? (parseInt(packageInfo) || 1) : 1;
+                    parsedData.push({ supplier: supplier, productName: productName, maxStock: maxStockNum, barcode: barcode, packageSize: packageSize, type: type });
+                }
+                return { data: parsedData, errors: errors };
+            }
+
+            function generatePreview(data) {
+                var container = document.getElementById('previewContainer');
+                var errorHtml = '';
+                if (data.errors.length > 0) {
+                    errorHtml = '<div class="import-error"><h3>❌ Errores:</h3><ul>' + data.errors.map(function(e) { return '<li>' + e + '</li>'; }).join('') + '</ul></div>';
+                }
+                if (data.data.length === 0) {
+                    container.innerHTML = errorHtml + '<div class="import-error"><h3>⚠️ No se encontraron datos válidos</h3></div>';
+                    document.getElementById('saveBtn').disabled = true; return;
+                }
+                var supplierCount = new Set(data.data.map(function(d) { return d.supplier; })).size;
+                var html = errorHtml + '<div class="import-stats"><h3>✅ Vista Previa</h3><div class="flex" style="gap: 1rem;"><span class="badge badge-blue">' + supplierCount + ' proveedores</span><span class="badge badge-green">' + data.data.length + ' productos</span></div></div><div style="max-height: 400px; overflow-y: auto;"><table class="preview-table"><thead><tr><th>Proveedor</th><th>Producto</th><th>Max</th><th>Código</th><th>Paq</th><th>Tipo</th></tr></thead><tbody>';
+                html += data.data.map(function(item) {
+                    return '<tr><td><strong>' + item.supplier + '</strong></td><td>' + item.productName + '</td><td>' + item.maxStock + '</td><td>' + item.barcode + '</td><td>' + item.packageSize + '</td><td><span class="badge ' + (item.type === 'package' ? 'badge-blue' : 'badge-green') + '">' + item.type.toUpperCase() + '</span></td></tr>';
+                }).join('');
+                html += '</tbody></table></div>';
+                container.innerHTML = html;
+                document.getElementById('saveBtn').disabled = false;
+            }
+
+            function saveImportedData(data) {
+                var supplierIdCounter = suppliers.length > 0 ? Math.max.apply(null, suppliers.map(function(s) { return parseInt(s.id.replace(/\D/g, '')) || 0; })) + 1 : 1;
+                var productIdCounter = 1;
+                Object.keys(products).forEach(function(key) {
+                    products[key].forEach(function(p) {
+                        var idNum = parseInt(p.id.replace(/\D/g, '')) || 0;
+                        if (idNum >= productIdCounter) { productIdCounter = idNum + 1; }
+                    });
+                });
+                var supplierMap = {};
+                data.data.forEach(function(item) {
+                    if (!supplierMap[item.supplier]) { supplierMap[item.supplier] = []; }
+                    supplierMap[item.supplier].push(item);
+                });
+                var addedSuppliers = 0, addedProducts = 0;
+                for (var supplierName in supplierMap) {
+                    var existingSupplier = suppliers.find(function(s) { return s.name.toLowerCase() === supplierName.toLowerCase(); });
+                    var supplierId;
+                    if (existingSupplier) {
+                        supplierId = existingSupplier.id;
+                    } else {
+                        supplierId = 'prov' + supplierIdCounter++;
+                        suppliers.push({ id: supplierId, name: supplierName, type: determineSupplierType(supplierMap[supplierName]) });
+                        addedSuppliers++;
+                    }
+                    if (!products[supplierId]) { products[supplierId] = []; }
+                    supplierMap[supplierName].forEach(function(prod) {
+                        products[supplierId].push({ id: 'prod' + productIdCounter++, name: prod.productName, barcode: prod.barcode, maxStock: prod.maxStock, type: prod.type, packageSize: prod.packageSize });
+                        addedProducts++;
+                    });
+                }
+                document.getElementById('importData').value = '';
+                document.getElementById('previewContainer').classList.add('hidden');
+                document.getElementById('saveBtn').disabled = true;
+                previewData = [];
+                updateManagementInfo();
+                loadAdminSuppliersList();
+                alert('✅ Datos guardados: ' + addedSuppliers + ' proveedores y ' + addedProducts + ' productos nuevos.');
+            }
+
+            function loadResults() {
+                var container = document.getElementById('resultsContainer');
+                container.innerHTML = '';
+                var hasAnyResults = false;
+                var sortedSuppliers = suppliers.slice().sort(function(a, b) { return a.name.localeCompare(b.name); });
+                sortedSuppliers.forEach(function(supplier) {
+                    var supplierProducts = products[supplier.id] || [];
+                    var countedProducts = supplierProducts.filter(function(p) { return inventoryCounts[p.id] !== undefined; });
+                    if (countedProducts.length > 0) {
+                        hasAnyResults = true;
+                        var supplierDiv = document.createElement('div');
+                        supplierDiv.className = 'results-card';
+                        var totalItemsToOrder = 0;
+                        var orderDetails = [];
+                        var productsHtml = '';
+                        supplierProducts.forEach(function(product) {
+                            var isCounted = inventoryCounts[product.id] !== undefined;
+                            if (isCounted) {
+                                var currentCount = parseInt(inventoryCounts[product.id]) || 0;
+                                var order = calculateOrder(product, currentCount);
+                                if (order.orderQuantity > 0) {
+                                    totalItemsToOrder += order.orderQuantity;
+                                    orderDetails.push({ name: product.name, quantity: order.orderQuantity, unit: order.orderUnit, type: product.type, unitsPerPackage: order.unitsPerPackage, totalUnits: order.orderQuantity * order.unitsPerPackage });
+                                }
+                                productsHtml += '<div class="results-product has-count"><div class="flex justify-between" style="align-items: center; gap: 0.5rem;"><div style="flex: 1;"><div style="font-weight: 600;">' + product.name + '</div><div style="font-size: 0.75rem; color: #6b7280;">Físico: <strong>' + currentCount + '</strong> | Max: <strong>' + product.maxStock + '</strong> | Faltan: <strong style="color: #dc2626;">' + order.needed + '</strong></div></div><div style="text-align: right;">' + (order.orderQuantity > 0 ? '<div style="background: #059669; color: white; padding: 0.375rem 0.75rem; border-radius: 0.5rem;"><div>PEDIR:</div><div style="font-weight: bold;">' + order.orderQuantity + ' ' + order.orderUnit + '</div></div>' : '<div style="background: #fee2e2; color: #dc2626; padding: 0.375rem 0.75rem; border-radius: 0.5rem; border: 1px solid #fca5a5;">Completo</div>') + '</div></div></div>';
+                            }
+                        });
+                        var orderSummaryHtml = '';
+                        if (orderDetails.length > 0) {
+                            orderSummaryHtml = '<div class="order-summary"><h4>📋 Resumen del Pedido</h4><div style="max-height: 200px; overflow-y: auto;">' + orderDetails.map(function(item) {
+                                return '<div class="order-item"><div style="flex: 1;"><div style="font-weight: 600;">' + item.name + '</div>' + (item.type === 'package' ? '<div style="font-size: 0.7rem; color: #6b7280;">' + item.quantity + ' paq × ' + item.unitsPerPackage + ' = ' + item.totalUnits + ' uni</div>' : '') + '</div><div style="text-align: right;"><div style="font-weight: bold;">' + item.quantity + '</div><div style="font-size: 0.7rem;">' + item.unit + '</div></div></div>';
+                            }).join('') + '</div><div class="order-total">🛒 Total del Pedido: ' + totalItemsToOrder + ' artículos</div></div>';
+                        } else {
+                            orderSummaryHtml = '<div style="background: #f0fdf4; border: 2px solid #bbf7d0; padding: 0.75rem; text-align: center;"><div style="color: #059669; font-weight: 600;">✅ Stock Completo</div></div>';
+                        }
+                        supplierDiv.innerHTML = '<div class="results-header" onclick="window.toggleResultsProvider(\'' + supplier.id + '\')"><div class="flex justify-between"><div><h3>' + supplier.name + '</h3><div class="flex" style="gap: 0.5rem;"><span class="badge badge-blue">' + supplierProducts.length + ' prod.</span><span class="badge badge-green">' + countedProducts.length + ' cont.</span>' + (countedProducts.length < supplierProducts.length ? '<span class="badge badge-yellow">' + (supplierProducts.length - countedProducts.length) + ' pend.</span>' : '<span class="badge badge-green">✅ Completo</span>') + '</div></div><div><span class="expand-icon" id="results-indicator-' + supplier.id + '">⌄</span></div></div></div><div class="results-content hidden" id="results-content-' + supplier.id + '">' + productsHtml + orderSummaryHtml + (totalItemsToOrder > 0 ? '<div style="margin-top: 0.5rem; text-align: center;"><button onclick="window.sendWhatsAppOrder(\'' + supplier.id + '\')" class="btn btn-whatsapp">📱 Enviar Pedido</button></div>' : '') + '</div>';
+                        container.appendChild(supplierDiv);
+                    }
+                });
+                if (!hasAnyResults) {
+                    container.innerHTML = '<div class="card text-center" style="padding: 2rem;"><div style="font-size: 3rem;">📋</div><h3>No hay conteos realizados</h3><p>Comienza a contar para ver los resultados.</p><button id="startCountingBtn" class="btn btn-primary" style="margin-top: 1rem;">Comenzar</button></div>';
+                    document.getElementById('startCountingBtn').addEventListener('click', function() { document.getElementById('countingTab').click(); });
+                }
+            }
+            
+            window.toggleResultsProvider = function(supplierId) {
+                var content = document.getElementById('results-content-' + supplierId);
+                var indicator = document.getElementById('results-indicator-' + supplierId);
+                content.classList.toggle('hidden');
+                indicator.classList.toggle('rotated');
+            };
+
+            window.sendWhatsAppOrder = function(supplierId) {
+                var supplier = suppliers.find(function(s) { return s.id === supplierId; });
+                if (!supplier) return;
+                var orderItems = [];
+                (products[supplierId] || []).forEach(function(product) {
+                    if (inventoryCounts[product.id] !== undefined) {
+                        var order = calculateOrder(product, parseInt(inventoryCounts[product.id]) || 0);
+                        if (order.orderQuantity > 0) {
+                            orderItems.push({ name: product.name, quantity: order.orderQuantity, unit: order.orderUnit, type: product.type, unitsPerPackage: order.unitsPerPackage });
+                        }
+                    }
+                });
+                if (orderItems.length === 0) { alert('No hay productos para pedir.'); return; }
+                var today = new Date();
+                var message = '*PEDIDO LÍDER MARKET* 🛒\n\n📅 Fecha: ' + today.toLocaleDateString() + '\n🏢 Proveedor: *' + supplier.name + '*\n👤 Solicitado por: ' + currentUser + '\n\n📋 *PRODUCTOS A PEDIR:*\n\n' +
+                              orderItems.map(function(item) {
+                                  return '• ' + item.name + '\n   → *' + item.quantity + ' ' + item.unit + '*' + (item.type === 'package' ? ' (' + (item.quantity * item.unitsPerPackage) + ' unidades)' : '');
+                              }).join('\n\n') + '\n\n---\n📦 Total: ' + orderItems.length + ' productos diferentes';
+                window.open('https://wa.me/?text=' + encodeURIComponent(message), '_blank');
+            };
+
+            // *** FUNCIONES DE ADMIN PARA PROVEEDORES Y PRODUCTOS ***
+            function loadAdminSuppliersList() {
+                var container = document.getElementById('adminSuppliersList');
+                container.innerHTML = '';
+                if (suppliers.length === 0) {
+                    container.innerHTML = '<p style="color: #6b7280; text-align: center; padding: 1rem;">No hay proveedores.</p>'; return;
+                }
+                var sortedSuppliers = suppliers.slice().sort(function(a, b) { return a.name.localeCompare(b.name); });
+                sortedSuppliers.forEach(function(supplier) {
+                    var productCount = (products[supplier.id] || []).length;
+                    var div = document.createElement('div');
+                    div.innerHTML = '<div class="admin-list-item" id="supplier-item-' + supplier.id + '"><div onclick="window.toggleProductList(\'' + supplier.id + '\')"><strong style="font-size: 0.95rem;">' + supplier.name + '</strong><br><span style="font-size: 0.75rem; color: #6b7280;">' + productCount + ' productos <span class="expand-arrow">▶</span></span></div><div class="flex" style="gap: 0.5rem;"><button class="btn" style="background: #3b82f6; color: white; padding: 0.4rem 0.8rem; font-size: 0.8rem;" onclick="window.editSupplier(\'' + supplier.id + '\')">Editar</button><button class="btn btn-danger" style="padding: 0.4rem 0.8rem; font-size: 0.8rem;" onclick="window.deleteSupplier(\'' + supplier.id + '\')">Eliminar</button></div></div><div id="products-for-' + supplier.id + '" class="product-list-container hidden"></div>';
+                    container.appendChild(div);
+                });
+            }
+
+            window.editSupplier = function(supplierId) {
+                event.stopPropagation();
+                var supplier = suppliers.find(function(s) { return s.id === supplierId; }); if (!supplier) return;
+                var newName = prompt('Nuevo nombre para el proveedor:', supplier.name);
+                if (newName && newName.trim() !== '') { supplier.name = newName.trim(); loadAdminSuppliersList(); }
+            };
+
+            window.deleteSupplier = function(supplierId) {
+                event.stopPropagation();
+                var supplier = suppliers.find(function(s) { return s.id === supplierId; }); if (!supplier) return;
+                if (confirm('¿Eliminar a "' + supplier.name + '" y TODOS sus productos?')) {
+                    suppliers = suppliers.filter(function(s) { return s.id !== supplierId; });
+                    delete products[supplierId];
+                    for (var dateString in supplierVisits) {
+                        var index = (supplierVisits[dateString] || []).indexOf(supplierId);
+                        if (index > -1) { supplierVisits[dateString].splice(index, 1); }
+                        if (supplierVisits[dateString].length === 0) { delete supplierVisits[dateString]; }
+                    }
+                    loadAdminSuppliersList();
+                    updateManagementInfo();
+                }
+            };
+            
+            window.toggleProductList = function(supplierId) {
+                var container = document.getElementById('products-for-' + supplierId);
+                var supplierItem = document.getElementById('supplier-item-' + supplierId);
+                var isEmpty = container.innerHTML.trim() === '';
+                if (isEmpty && !container.classList.contains('hidden')) {
+                     container.classList.add('hidden');
+                     supplierItem.classList.remove('expanded');
+                } else if (isEmpty) {
+                    loadProductsForAdmin(supplierId);
+                    container.classList.remove('hidden');
+                    supplierItem.classList.add('expanded');
+                } else {
+                    container.classList.toggle('hidden');
+                    supplierItem.classList.toggle('expanded');
+                }
+            };
+
+            function loadProductsForAdmin(supplierId) {
+                var container = document.getElementById('products-for-' + supplierId);
+                var productList = products[supplierId] || [];
+                container.innerHTML = '';
+                if (productList.length === 0) {
+                    container.innerHTML = '<p style="font-size: 0.8rem; color: #6b7280; text-align: center; padding: 0.5rem;">No hay productos para este proveedor.</p>'; return;
+                }
+                productList.forEach(function(product) {
+                    var div = document.createElement('div');
+                    div.className = 'product-admin-item';
+                    div.id = 'product-row-' + product.id;
+                    div.innerHTML = getProductDisplayHtml(supplierId, product);
+                    container.appendChild(div);
+                });
+            }
+
+            function getProductDisplayHtml(supplierId, product) {
+                 return '<div><strong style="font-size: 0.9rem;">' + product.name + '</strong><div style="font-size: 0.75rem; color: #4b5563;"><span>Max: ' + product.maxStock + '</span> | <span>Paq: ' + product.packageSize + '</span> | <span>' + product.type + '</span><br><span style="font-family: monospace;">' + product.barcode + '</span></div></div>' +
+                        '<div class="flex" style="gap: 0.5rem;"><button class="btn" style="background: #3b82f6; color: white; padding: 0.3rem 0.6rem; font-size: 0.75rem;" onclick="window.editProduct(\'' + supplierId + '\', \'' + product.id + '\')">Editar</button><button class="btn btn-danger" style="padding: 0.3rem 0.6rem; font-size: 0.75rem;" onclick="window.deleteProduct(\'' + supplierId + '\', \'' + product.id + '\')">Eliminar</button></div>';
+            }
+            
+            window.deleteProduct = function(supplierId, productId) {
+                var productList = products[supplierId] || [];
+                var product = productList.find(function(p) { return p.id === productId; });
+                if (confirm('¿Eliminar el producto "' + product.name + '"?')) {
+                    products[supplierId] = productList.filter(function(p) { return p.id !== productId; });
+                    loadProductsForAdmin(supplierId);
+                    updateManagementInfo();
+                    loadAdminSuppliersList(); // Recargar todo para actualizar el contador
+                }
+            };
+
+            window.editProduct = function(supplierId, productId) {
+                var productList = products[supplierId] || [];
+                var product = productList.find(function(p) { return p.id === productId; });
+                var row = document.getElementById('product-row-' + productId);
+                row.innerHTML = '<div style="font-size: 0.8rem;"><input type="text" id="edit-name-' + productId + '" value="' + product.name + '" class="input" style="margin-bottom: 4px; text-align:left;"><div class="grid" style="grid-template-columns: 1fr 1fr; gap: 4px;"><input type="number" id="edit-stock-' + productId + '" value="' + product.maxStock + '" class="input"><input type="number" id="edit-paq-' + productId + '" value="' + product.packageSize + '" class="input"></div><input type="text" id="edit-barcode-' + productId + '" value="' + product.barcode + '" class="input" style="margin-top: 4px; text-align:left;"><select id="edit-type-' + productId + '" class="input" style="margin-top: 4px; text-align:left;"><option value="individual" ' + (product.type === 'individual' ? 'selected' : '') + '>Individual</option><option value="package" ' + (product.type === 'package' ? 'selected' : '') + '>Paquete</option></select></div>' +
+                                '<div class="flex-col" style="gap: 0.5rem;"><button class="btn btn-success" style="padding: 0.3rem 0.6rem; font-size: 0.75rem;" onclick="window.saveProduct(\'' + supplierId + '\', \'' + product.id + '\')">Guardar</button><button class="btn btn-secondary" style="padding: 0.3rem 0.6rem; font-size: 0.75rem;" onclick="window.cancelEditProduct(\'' + supplierId + '\', \'' + product.id + '\')">Cancelar</button></div>';
+            };
+            
+            window.cancelEditProduct = function(supplierId, productId) {
+                var productList = products[supplierId] || [];
+                var product = productList.find(function(p) { return p.id === productId; });
+                var row = document.getElementById('product-row-' + productId);
+                row.innerHTML = getProductDisplayHtml(supplierId, product);
+            };
+
+            window.saveProduct = function(supplierId, productId) {
+                var productList = products[supplierId] || [];
+                var productIndex = productList.findIndex(function(p) { return p.id === productId; });
+                if (productIndex === -1) return;
+                
+                var newName = document.getElementById('edit-name-' + productId).value.trim();
+                var newStock = parseInt(document.getElementById('edit-stock-' + productId).value) || 0;
+                var newPaq = parseInt(document.getElementById('edit-paq-' + productId).value) || 1;
+                var newBarcode = document.getElementById('edit-barcode-' + productId).value.trim();
+                var newType = document.getElementById('edit-type-' + productId).value;
+
+                if (!newName || newStock <= 0) {
+                    alert('El nombre y el stock máximo son obligatorios.'); return;
+                }
+
+                products[supplierId][productIndex] = {
+                    id: productId,
+                    name: newName,
+                    maxStock: newStock,
+                    packageSize: newPaq,
+                    barcode: newBarcode,
+                    type: newType
+                };
+                
+                var row = document.getElementById('product-row-' + productId);
+                row.innerHTML = getProductDisplayHtml(supplierId, products[supplierId][productIndex]);
+            };
+
+            // Event Listeners
+            document.addEventListener('DOMContentLoaded', function() {
+                // Login
+                function performLogin() {
+                    var username = document.getElementById('username').value.trim();
+                    if (!username) { alert('Por favor ingrese su nombre'); return; }
+                    if (isAdmin) {
+                        if (document.getElementById('password').value !== adminPassword) { alert('Contraseña incorrecta'); return; }
+                        currentUser = username;
+                        showScreen('adminDashboard');
+                        updateManagementInfo();
+                        loadAdminSuppliersList();
+                    } else {
+                        currentUser = username;
+                        document.getElementById('welcomeUser').textContent = 'Hola, ' + username;
+                        showScreen('userDashboard');
+                        generateWeeklyCalendar();
+                        updateSuppliersForSelectedDay();
+                        loadAllSuppliers();
+                    }
+                }
+                document.getElementById('loginBtn').addEventListener('click', performLogin);
+                document.getElementById('username').addEventListener('keydown', function(e) { if (e.key === 'Enter') { if (isAdmin) {document.getElementById('password').focus();} else {performLogin();} e.preventDefault();} });
+                document.getElementById('password').addEventListener('keydown', function(e) { if (e.key === 'Enter') { performLogin(); e.preventDefault(); } });
+                document.getElementById('userTab').addEventListener('click', function() { this.style.background = '#2563eb'; this.style.color = 'white'; var at=document.getElementById('adminTab'); at.style.background = 'transparent'; at.style.color = '#6b7280'; document.getElementById('passwordField').classList.add('hidden'); isAdmin = false; });
+                document.getElementById('adminTab').addEventListener('click', function() { this.style.background = '#2563eb'; this.style.color = 'white'; var ut=document.getElementById('userTab'); ut.style.background = 'transparent'; ut.style.color = '#6b7280'; document.getElementById('passwordField').classList.remove('hidden'); isAdmin = true; });
+
+                // Logout
+                function logout() { currentUser = null; selectedDay = null; showScreen('loginScreen'); document.getElementById('username').value = ''; document.getElementById('password').value = ''; }
+                document.getElementById('logoutBtn').addEventListener('click', logout);
+                document.getElementById('adminLogoutBtn').addEventListener('click', logout);
+
+                // User Dashboard Tabs
+                document.getElementById('countingTab').addEventListener('click', function() { this.style.background = '#2563eb'; this.style.color = 'white'; var rt=document.getElementById('resultsTab'); rt.style.background = 'transparent'; rt.style.color = '#6b7280'; document.getElementById('countingSection').classList.remove('hidden'); document.getElementById('resultsSection').classList.add('hidden'); updateSuppliersForSelectedDay(); loadAllSuppliers(); });
+                document.getElementById('resultsTab').addEventListener('click', function() { this.style.background = '#2563eb'; this.style.color = 'white'; var ct=document.getElementById('countingTab'); ct.style.background = 'transparent'; ct.style.color = '#6b7280'; document.getElementById('countingSection').classList.add('hidden'); document.getElementById('resultsSection').classList.remove('hidden'); loadResults(); });
+
+                // Counting Screen Buttons
+                document.getElementById('backBtn').addEventListener('click', function() { showScreen('userDashboard'); updateSuppliersForSelectedDay(); loadAllSuppliers(); });
+                document.getElementById('clearCountsBtn').addEventListener('click', clearCounts);
+                document.getElementById('finishBtn').addEventListener('click', finishCounting);
+
+                // Admin Buttons
+                document.getElementById('previewBtn').addEventListener('click', function() { var rawData = document.getElementById('importData').value.trim(); if (!rawData) { alert('Ingrese datos para previsualizar'); return; } previewData = parseImportData(rawData); generatePreview(previewData); document.getElementById('previewContainer').classList.remove('hidden'); });
+                document.getElementById('saveBtn').addEventListener('click', function() { if (previewData && previewData.data.length > 0) { saveImportedData(previewData); } });
+                document.getElementById('clearBtn').addEventListener('click', function() { document.getElementById('importData').value = ''; document.getElementById('previewContainer').classList.add('hidden'); document.getElementById('saveBtn').disabled = true; previewData = []; });
+                document.getElementById('loadExampleBtn').addEventListener('click', function() { document.getElementById('importData').value = 'Coca-Cola\tCoca Cola 600ml\t240\t7501055365050\t24\tPAQUETE\nCoca-Cola\tSprite 600ml\t120\t7501055365060\t24\tPAQUETE\nPanadería\tBolillo\t100\tBOLILLO001\t1\tINDIVIDUAL'; });
+                document.getElementById('clearAllBtn').addEventListener('click', function() { if (confirm('⚠️ ¿Eliminar TODOS los datos (proveedores, productos, conteos, visitas)?\n\nEsta acción no se puede deshacer.')) { suppliers = []; products = {}; inventoryCounts = {}; supplierVisits = {}; updateManagementInfo(); loadAdminSuppliersList(); alert('✅ Todos los datos han sido eliminados.'); } });
+
+                updateManagementInfo();
+            });
+        })();
+    </script>
+</body>
+</html>
